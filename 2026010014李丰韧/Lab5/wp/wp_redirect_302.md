@@ -11,24 +11,24 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 环境地址 | http://challenge-3b02ea13739b82da.sandbox.ctfhub.com:10800/index.php |
-| Flag | ctfhub{31dc215db63fc3936c947dd1} |
+| 环境地址 | http://challenge-061d94c1402095ff.sandbox.ctfhub.com:10800/index.php |
+| Flag | ctfhub{f29a9456ac71c8ee4b6fcb41} |
 
 ## 解题过程
 
-开启题目后我用浏览器访问靶场首页，页面几乎瞬间变成了另一个地址的内容，看起来就是个普通欢迎页，地址栏里的路径也变了，说明中途发生了跳转。因为浏览器会自动跟随跳转，只看最终页面是看不到跳转本身的，于是我改用终端里的 curl 加 `-i` 参数，把状态行和响应头一起打印出来。第一次敲命令时手滑，`uname` 和 `curl` 粘在了一起，报了个 invalid option，重敲之后才拿到结果。这次响应里清楚写着 `HTTP/1.1 302 Moved Temporarily` 和 `Location: /index.html`，而且 302 这条响应自己的响应体里就直接给了 flag。
+开启题目后我用浏览器访问靶场首页，页面几乎瞬间变成了另一个地址的内容，看起来就是个普通欢迎页，地址栏里的路径也变了，说明中途发生了跳转。因为浏览器会自动跟随跳转，只看最终页面是看不到跳转本身的，于是我改用终端里的 curl 加 `-i` 参数，把状态行和响应头一起打印出来（再加 `-s` 把进度条静音，屏幕更干净）。这次响应里清楚写着 `HTTP/1.1 302 Moved Temporarily` 和 `Location: /index.html`，而且 302 这条响应自己的响应体里就直接给了 flag。
 
 ## 关键请求/响应
 
 ```http
-$ curl -i http://challenge-3b02ea13739b82da.sandbox.ctfhub.com:10800/index.php
+$ curl -si http://challenge-061d94c1402095ff.sandbox.ctfhub.com:10800/index.php
 
 GET /index.php HTTP/1.1
-Host: challenge-3b02ea13739b82da.sandbox.ctfhub.com:10800
+Host: challenge-061d94c1402095ff.sandbox.ctfhub.com:10800
 
 HTTP/1.1 302 Moved Temporarily
 Server: openresty/1.21.4.2
-Date: Fri, 30 Oct 2026 11:21:08 GMT
+Date: Sat, 24 Oct 2026 07:42:35 GMT
 Content-Type: text/html; charset=UTF-8
 Transfer-Encoding: chunked
 Connection: keep-alive
@@ -38,7 +38,7 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Headers: X-Requested-With
 Access-Control-Allow-Methods: *
 
-ctfhub{31dc215db63fc3936c947dd1}
+ctfhub{f29a9456ac71c8ee4b6fcb41}
 ```
 
 ## 原理与复盘

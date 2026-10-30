@@ -11,8 +11,8 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 环境地址 | http://challenge-5715071dc92d8b52.sandbox.ctfhub.com:10800/index.php |
-| Flag | ctfhub{301393864d78c51a26cd343d} |
+| 环境地址 | http://challenge-8f1f153fa1a77670.sandbox.ctfhub.com:10800/index.php |
+| Flag | ctfhub{2bad78f19a430a9a158e7dcc} |
 
 ## 解题过程
 
@@ -24,14 +24,14 @@
 （1）浏览器默认发出的 GET，拿不到 flag
 
 GET /index.php HTTP/1.1
-Host: challenge-5715071dc92d8b52.sandbox.ctfhub.com:10800
+Host: challenge-8f1f153fa1a77670.sandbox.ctfhub.com:10800
 
 （2）改成题目要求的方法后，服务器返回 flag
 
-$ curl -X CTFHUB http://challenge-5715071dc92d8b52.sandbox.ctfhub.com:10800/index.php
+$ curl -s -X CTFHUB http://challenge-8f1f153fa1a77670.sandbox.ctfhub.com:10800/index.php
 
 CTFHUB /index.php HTTP/1.1
-Host: challenge-5715071dc92d8b52.sandbox.ctfhub.com:10800
+Host: challenge-8f1f153fa1a77670.sandbox.ctfhub.com:10800
 
 <html>
 <head>
@@ -40,7 +40,7 @@ Host: challenge-5715071dc92d8b52.sandbox.ctfhub.com:10800
 </head>
 <body>
 
-good job! ctfhub{301393864d78c51a26cd343d}
+good job! ctfhub{2bad78f19a430a9a158e7dcc}
 
 </body>
 </html>
